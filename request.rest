@@ -1,0 +1,58 @@
+###
+//Get users
+GET http://localhost:3000/accounts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5NjY1MTUyNywiZXhwIjoxNjk2NjU1MTI3fQ.kHb8MwFM9rBPN--7KlIWGlA5tU7mSfMWXZukR-pbAAw
+
+###
+//Get user by uuid
+GET http://localhost:3000/accounts/3632eaac-2c28-4ea3-be66-bc21ba937eea
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5NzQzMjcwNSwiZXhwIjoxNjk3NDM2MzA1fQ.Hbxwj64d6Eo3Tzti75ydt5hmU47HcQmfS2WpZGGkyCc
+
+###
+//Create user
+POST http://localhost:3000/accounts
+Content-Type: application/json
+
+{
+    "name": "Reza Putra Pratama",
+    "email": "ezatama33@gmail.com",
+    "password": "123456",
+    "confPassword": "123456",
+    "role": "98"
+}
+
+###
+//update user
+PATCH http://localhost:3000/accounts/3632eaac-2c28-4ea3-be66-bc21ba937eea
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5NjY1MTUyNywiZXhwIjoxNjk2NjU1MTI3fQ.kHb8MwFM9rBPN--7KlIWGlA5tU7mSfMWXZukR-pbAAw
+
+{
+    "name": "Reza Putra Pratama",
+    "email": "ezatama33@gmail.com",
+    "password": "123456",
+    "confPassword": "123456",
+    "role": "98"
+}
+
+###
+//login
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email": "ezatama33@gmail.com",
+    "password": "123456"
+}
+
+###
+//tipe proyek
+GET http://localhost:3000/tipe-proyek
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5NzQzNzcyMCwiZXhwIjoxNjk3NDQxMzIwfQ.IgakYPmB19xalY7i3WzjN4yFmWvLo9MsJP8UI9h4fJ8
+
+###
+//proyek
+GET http://localhost:3000/proyek
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5NzQzMjcwNSwiZXhwIjoxNjk3NDM2MzA1fQ.Hbxwj64d6Eo3Tzti75ydt5hmU47HcQmfS2WpZGGkyCc
