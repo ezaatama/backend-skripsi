@@ -11,10 +11,14 @@ const authRoutes = require("./routes/auth.js");
 const proyekRoutes = require("./routes/proyek.js");
 const tipeProyekRoutes = require("./routes/tipe_proyek.js");
 const unitsRoutes = require("./routes/units.js");
+const progressUnitRoutes = require("./routes/progress_unit.js");
+const progressImageRoutes = require("./routes/progress_images.js");
+const buyerRoutes = require("./routes/buyer.js");
+const buyerHasUnitRoutes = require("./routes/buyer_has_unit.js");
 const multer = require('multer');
 const upload = multer();
-// const BuyerHasUnit = require("./models/buyer_has_units.js");
-const Units = require("./models/units.js");
+const BuyerHasUnit = require("./models/buyer_has_units.js");
+const Buyer = require("./models/buyer.js");
 const TipeProyek = require("./models/tipe_proyek.js");
 const Proyek = require("./models/proyek.js");
 
@@ -24,10 +28,10 @@ dotEnv.config();
 //   .authenticate()
 //   .then(() => {
 //     console.log("Database connected...");
-//     // Units.sync({alter: true});
+//     // Buyer.sync({alter: true});
 //     // TipeProyek.sync({alter: true});
 //     // Proyek.sync({alter: true});
-//     // BuyerHasUnit.sync({alter: true});
+//     BuyerHasUnit.sync({alter: true});
 //     // user.sync({force: true});
 //     // roles.drop();
 //     // user.drop();
@@ -76,6 +80,10 @@ app.use(accountRoutes);
 app.use(proyekRoutes);
 app.use(tipeProyekRoutes);
 app.use(unitsRoutes);
+app.use(progressUnitRoutes);
+app.use(progressImageRoutes);
+app.use(buyerRoutes);
+app.use(buyerHasUnitRoutes);
 
 app.listen(process.env.APP_PORT, () => {
   console.log(`Example app listening on port ${process.env.APP_PORT}`);
