@@ -12,13 +12,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtY
 //Create user
 POST http://localhost:3000/accounts
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5Nzc4MzI3NCwiZXhwIjoxNjk3Nzg2ODc0fQ.qwenc5aO2DvT5L6FzeCzZfYJS7zhSqYvIF-Ha5ixm0g
 
 {
-    "name": "Reza Putra Pratama",
-    "email": "ezatama33@gmail.com",
+    "name": "Reza Putra Admin",
+    "email": "admin@gmail.com",
     "password": "123456",
     "confPassword": "123456",
-    "role": "98"
+    "role": "99"
 }
 
 ###
@@ -56,3 +57,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtY
 GET http://localhost:3000/proyek
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5NzQzMjcwNSwiZXhwIjoxNjk3NDM2MzA1fQ.Hbxwj64d6Eo3Tzti75ydt5hmU47HcQmfS2WpZGGkyCc
+
+###
+//units
+POST http://localhost:3000/units
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5NzUzMjE4NywiZXhwIjoxNjk3NTM1Nzg3fQ.br33BVr7io9IzETaJAqTdcs6GFwO7CS6z-MYVl6UaAU
+
+{
+    "name": "Unit Proyek Pertama",
+    "luas_tanah": 65.2,
+    "price": 200500000,
+    "status": 1,
+    "tipeProyekId": 1,
+    "proyekId": 1
+
+}
