@@ -13,7 +13,6 @@ const Buyer = sequelize.define(
     },
     profile_picture: {
       type: DataTypes.TEXT,
-      allowNull: false,
     },
     phoneNumber: {
       type: DataTypes.STRING,

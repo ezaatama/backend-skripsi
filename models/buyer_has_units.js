@@ -5,8 +5,7 @@ const Unit = require("./units");
 
 const BuyerHasUnit = sequelize.define("buyer_has_units", {});
 
-BuyerHasUnit.belongsTo(Buyer);
-BuyerHasUnit.belongsTo(Unit);
-BuyerHasUnit.removeAttribute("id");
+Unit.belongsToMany(Buyer, {through: BuyerHasUnit});
+Buyer.belongsToMany(Unit, {through: BuyerHasUnit});
 
 module.exports = BuyerHasUnit;
