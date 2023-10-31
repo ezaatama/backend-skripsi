@@ -4,8 +4,12 @@ const { Sequelize } = require('sequelize');
 const { validationResult } = require("express-validator");
 
 const getAllProyek = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+  
   try {
-    const response = await Proyek.findAll({
+    const proyek = await Proyek.findAndCountAll({
       attributes: [
         "id",
         "slug",
@@ -17,6 +21,8 @@ const getAllProyek = async (req, res) => {
         "siteplan",
         "facilities",
       ],
+      offset,
+      limit,
       include: [
         {
           model: TIPE_PROYEK,
@@ -27,7 +33,7 @@ const getAllProyek = async (req, res) => {
       ],
     });
 
-    const responseWithFacilitiesArray = response.map((proyek) => {
+    const responseWithFacilitiesArray = proyek.rows.map((proyek) => {
       const facilitiesArray = proyek.facilities.split(", ").map((item) => {
         const [label, content] = item.split(": ");
         return { label, content };
@@ -36,10 +42,33 @@ const getAllProyek = async (req, res) => {
       return proyek;
     });
 
-    res.status(200).json({
+    
+    const totalItems = proyek.count;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    if (page > totalPages) {
+      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+      return res.status(204).end();
+    }
+
+    const response = {
       message: "Data proyek berhasil diambil",
       data: responseWithFacilitiesArray,
-    });
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+      },
+    }
+
+    if (page > 1) {
+      response.meta.prevPage = page - 1;
+    }
+    if (page < totalPages) {
+      response.meta.nextPage = page + 1;
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
