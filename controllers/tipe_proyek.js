@@ -3,8 +3,12 @@ const TIPE_PROYEK = require("../models/tipe_proyek");
 const { validationResult } = require("express-validator");
 
 const getAllTipeProyek = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
   try {
-    const response = await TIPE_PROYEK.findAll({
+    const tipeProyek = await TIPE_PROYEK.findAndCountAll({
       attributes: [
         "id",
         "name",
@@ -16,8 +20,11 @@ const getAllTipeProyek = async (req, res) => {
         "spesification",
         "proyekId",
       ],
+      limit,
+      offset
     });
-    const responseWithSpesificationArray = response.map((tpProyek) => {
+
+    const responseWithSpesificationArray = tipeProyek.rows.map((tpProyek) => {
       const spesificationArray = tpProyek.spesification
         .split(", ")
         .map((item) => {
@@ -28,10 +35,32 @@ const getAllTipeProyek = async (req, res) => {
       return tpProyek;
     });
 
-    res.status(200).json({
+    const totalItems = tipeProyek.count;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    if (page > totalPages) {
+      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+      return res.status(204).end();
+    }
+
+    const response = {
       message: "Data tipe proyek berhasil diambil",
       data: responseWithSpesificationArray,
-    });
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+      }
+    }
+
+    if (page > 1) {
+      response.meta.prevPage = page - 1;
+    }
+    if (page < totalPages) {
+      response.meta.nextPage = page + 1;
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
