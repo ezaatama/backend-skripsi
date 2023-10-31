@@ -5,15 +5,41 @@ const axios = require("axios");
 const { validationResult } = require("express-validator");
 
 const getBuyer = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
   try {
-    const response = await Buyer.findAll({
+    const buyer = await Buyer.findAndCountAll({
       attributes: ["id", "name", "profile_picture", "phoneNumber"],
     });
 
-    res.status(200).json({
+    const totalItems = buyer.count;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    if (page > totalPages) {
+      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+      return res.status(204).end();
+    }
+
+    const response = {
       message: "Data buyer berhasil diambil!",
-      data: response,
-    });
+      data: buyer.rows,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+      },
+    };
+
+    if (page > 1) {
+      response.meta.prevPage = page - 1;
+    }
+    if (page < totalPages) {
+      response.meta.nextPage = page + 1;
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
