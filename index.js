@@ -17,6 +17,7 @@ const buyerRoutes = require("./routes/buyer.js");
 const multer = require('multer');
 const upload = multer();
 const Buyer = require("./models/buyer.js");
+const BuyerHasUnit = require("./models/buyer_has_units.js");
 const TipeProyek = require("./models/tipe_proyek.js");
 const Proyek = require("./models/proyek.js");
 
@@ -29,6 +30,7 @@ dotEnv.config();
 //     // Buyer.sync({alter: true});
 //     // TipeProyek.sync({alter: true});
 //     // Proyek.sync({alter: true});
+//     BuyerHasUnit.sync({alter: true});
 //     // user.sync({force: true});
 //     // roles.drop();
 //     // user.drop();
