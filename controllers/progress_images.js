@@ -4,17 +4,46 @@ const { validationResult } = require("express-validator");
 const { where } = require("sequelize");
 
 const getProgressImages = async (req, res) => {
-  try {
-    const response = await ProgressImage.findAll();
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
 
-    const imageArray = response.map((image) => ({
+  try {
+    const progressImage = await ProgressImage.findAndCountAll({
+      limit,
+      offset
+    });
+
+    const imageArray = progressImage.rows.map((image) => ({
       url: image.url,
     }));
 
-    res.status(200).json({
+    const totalItems = progressImage.count;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    if (page > totalPages) {
+      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+      return res.status(204).end();
+    }
+
+    const response = {
       message: "Data progress image berhasil diambil!",
       data: imageArray,
-    });
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+      },
+    };
+
+    if (page > 1) {
+      response.meta.prevPage = page - 1;
+    }
+    if (page < totalPages) {
+      response.meta.nextPage = page + 1;
+    }
+    
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
