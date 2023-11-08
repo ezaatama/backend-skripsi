@@ -45,5 +45,6 @@ const TipeProyek = sequelize.define(
 );
 
 TipeProyek.hasMany(Units);
+Units.belongsTo(TipeProyek);
 
 module.exports = TipeProyek;

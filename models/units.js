@@ -1,6 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/databases");
 const ProgressUnit = require("./progress_unit");
+const Account = require("./accounts");
+const ProgressImage = require("./progress_images");
 
 const Units = sequelize.define(
   "units",
@@ -36,5 +38,7 @@ const Units = sequelize.define(
 );
 
 Units.hasMany(ProgressUnit);
+Units.hasMany(ProgressImage);
+Units.belongsTo(Account);
 
 module.exports = Units;

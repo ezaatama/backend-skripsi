@@ -12,6 +12,8 @@ const getBuyer = async (req, res) => {
   try {
     const buyer = await Buyer.findAndCountAll({
       attributes: ["id", "name", "profile_picture", "phoneNumber"],
+      offset,
+      limit
     });
 
     const totalItems = buyer.count;

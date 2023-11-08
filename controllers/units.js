@@ -1,8 +1,11 @@
 const Units = require("../models/units");
 const Buyer = require("../models/buyer");
+const Account = require("../models/accounts");
 const Proyek = require("../models/proyek");
 const TipeProyek = require("../models/tipe_proyek");
 const { validationResult } = require("express-validator");
+const ProgressUnit = require("../models/progress_unit");
+const ProgressImage = require("../models/progress_images");
 
 const getAllUnits = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -13,7 +16,7 @@ const getAllUnits = async (req, res) => {
     const units = await Units.findAndCountAll({
       attributes: ["uuid", "name", "luas_tanah", "price", "status"],
       offset,
-      limit
+      limit,
     });
 
     const totalItems = units.count;
@@ -32,7 +35,7 @@ const getAllUnits = async (req, res) => {
         totalPages,
         currentPage: page,
       },
-    }
+    };
 
     if (page > 1) {
       response.meta.prevPage = page - 1;
@@ -47,30 +50,195 @@ const getAllUnits = async (req, res) => {
   }
 };
 
+//mobile
+const getListUnits = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
+  try {
+    const accountId = req.user;
+
+    const units = await Units.findAndCountAll({
+      attributes: ["uuid", "name", "status"],
+      where: { accountId: accountId },
+      offset,
+      limit,
+      include: [
+        {
+          model: Proyek,
+          attributes: ["name", "logo", "address"],
+        },
+      ],
+    });
+
+    const totalItems = units.count;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    if (page > totalPages) {
+      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+      return res.status(204).end();
+    }
+
+    const response = {
+      message: "Data unit berhasil diambil",
+      data: units.rows,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+      },
+    };
+
+    if (page > 1) {
+      response.meta.prevPage = page - 1;
+    }
+    if (page < totalPages) {
+      response.meta.nextPage = page + 1;
+    }
+
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getDetailUnit = async (req, res) => {
+  try {
+    const accountId = req.user;
+
+    const response = await Units.findOne({
+      attributes: ["name"],
+      where: {
+        accountId: accountId,
+        uuid: req.params.uuid || null,
+      },
+      include: [
+        {
+          model: Proyek,
+          attributes: ["name", "address", "logo"],
+        },
+        {
+          model: TipeProyek,
+          attributes: ["spesification"],
+        },
+      ],
+    });
+
+    if (!response)
+      return res.status(404).json({
+        message: "Data tidak ditemukan!",
+      });
+
+    // Proses spesification
+    const spesificationArray = response.tipe_proyek.spesification
+      .split(", ")
+      .map((item) => {
+        const [label, content] = item.split(": ");
+        return { label, content };
+      });
+
+    res.status(200).json({
+      message: "Detail unit berhasil diambil!",
+      data: {
+        name: response.name,
+        proyek: {
+          name: response.proyek.name,
+          address: response.proyek.address,
+        },
+        images: response.proyek.logo,
+        spesification: spesificationArray,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+const getProgressUnits = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+  try {
+    const accountId = req.user;
+
+    const response = await Units.findAndCountAll({
+      attributes: [],
+      offset,
+      limit,
+      where: {
+        accountId: accountId,
+        uuid: req.params.uuid || null,
+      },
+      include: [
+        {
+          model: ProgressUnit,
+          attributes: ["progress", "description"],
+          
+          include: [
+            {
+              model: ProgressImage,
+              attributes: ["url"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!response)
+      return res.status(404).json({
+        message: "Data tidak ditemukan!",
+      });
+
+    const totalItems = response.count;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    if (page > totalPages) {
+      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+      return res.status(204).end();
+    }
+
+    if (page > 1) {
+      response.meta.prevPage = page - 1;
+    }
+    if (page < totalPages) {
+      response.meta.nextPage = page + 1;
+    }
+
+    res.status(200).json({
+      message: "Progress unit berhasil diambil!",
+      data: response.rows,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 const getUnitById = async (req, res) => {
   try {
     const response = await Units.findOne({
-      attributes: [
-        "uuid",
-        "name",
-        "luas_tanah",
-        "price",
-        "status"
-      ],
+      attributes: ["uuid", "name", "luas_tanah", "price", "status"],
       where: {
-        uuid: req.params.uuid || null
+        uuid: req.params.uuid || null,
       },
       include: [
         {
           model: Buyer,
-          attributes: [
-            "id", "name", "phoneNumber"
-          ],
+          attributes: ["id", "name", "phoneNumber"],
           through: {
-            attributes: []
-          }
-        }
-      ]
+            attributes: [],
+          },
+        },
+      ],
     });
 
     if (!response)
@@ -88,18 +256,11 @@ const getUnitById = async (req, res) => {
       serverMessage: error.message,
     });
   }
-}
+};
 
 const createUnit = async (req, res) => {
-  const { 
-    name, 
-    luas_tanah, 
-    price, 
-    status, 
-    tipeProyekId,
-    proyekId,
-    buyer_id
-     } = req.body;
+  const { name, luas_tanah, price, status, tipeProyekId, proyekId, buyer_id } =
+    req.body;
 
   const errors = validationResult(req);
 
@@ -131,14 +292,16 @@ const createUnit = async (req, res) => {
     });
 
     if (buyer_id && buyer_id.length > 0) {
-      const buyers = await Buyer.findAll({where: {
-        id: buyer_id
-      }});
+      const buyers = await Buyer.findAll({
+        where: {
+          id: buyer_id,
+        },
+      });
 
       if (buyers.length > 0) {
         await unit.addBuyers(buyers);
       } else {
-        res.status(404).json({message: "Pembeli tidak ditemukan"});
+        res.status(404).json({ message: "Pembeli tidak ditemukan" });
         return;
       }
     }
@@ -161,18 +324,9 @@ const updateUnit = async (req, res) => {
   });
 
   if (!unit)
-    return res
-      .status(404)
-      .json({ message: "Data unit tidak ditemukan!" });
+    return res.status(404).json({ message: "Data unit tidak ditemukan!" });
 
-  const {
-    name,
-    id_tipe,
-    id_proyek,
-    luas_tanah,
-    price,
-    status
-  } = req.body;
+  const { name, id_tipe, id_proyek, luas_tanah, price, status } = req.body;
 
   try {
     await Units.update(
@@ -182,7 +336,7 @@ const updateUnit = async (req, res) => {
         proyekId: id_proyek,
         luas_tanah: luas_tanah,
         price: price,
-        status: status
+        status: status,
       },
       {
         where: {
@@ -220,11 +374,13 @@ const deleteUnit = async (req, res) => {
   }
 };
 
-
 module.exports = {
   getAllUnits,
+  getListUnits,
+  getDetailUnit,
+  getProgressUnits,
   getUnitById,
   createUnit,
   updateUnit,
-  deleteUnit
+  deleteUnit,
 };

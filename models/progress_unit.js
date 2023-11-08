@@ -20,6 +20,7 @@ const ProgressUnit = sequelize.define(
 );
 
 ProgressUnit.hasMany(ProgressImage);
+ProgressImage.belongsTo(ProgressUnit);
 
 
 module.exports = ProgressUnit;

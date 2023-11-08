@@ -17,9 +17,10 @@ const buyerRoutes = require("./routes/buyer.js");
 const multer = require('multer');
 const upload = multer();
 const Buyer = require("./models/buyer.js");
-const BuyerHasUnit = require("./models/buyer_has_units.js");
+const ProgressImages = require("./models/progress_images.js");
 const TipeProyek = require("./models/tipe_proyek.js");
 const Proyek = require("./models/proyek.js");
+const Units = require("./models/units.js");
 
 dotEnv.config();
 
@@ -27,10 +28,10 @@ dotEnv.config();
 //   .authenticate()
 //   .then(() => {
 //     console.log("Database connected...");
-//     // Buyer.sync({alter: true});
+//     // Units.sync({alter: true});
 //     // TipeProyek.sync({alter: true});
 //     // Proyek.sync({alter: true});
-//     BuyerHasUnit.sync({alter: true});
+//     ProgressImages.sync({alter: true});
 //     // user.sync({force: true});
 //     // roles.drop();
 //     // user.drop();
@@ -55,7 +56,7 @@ app.use(
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000",
+    origin: "*",
   })
 );
 
