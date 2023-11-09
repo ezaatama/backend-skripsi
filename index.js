@@ -14,7 +14,7 @@ const unitsRoutes = require("./routes/units.js");
 const progressUnitRoutes = require("./routes/progress_unit.js");
 const progressImageRoutes = require("./routes/progress_images.js");
 const buyerRoutes = require("./routes/buyer.js");
-const multer = require('multer');
+const multer = require("multer");
 const upload = multer();
 const Buyer = require("./models/buyer.js");
 const ProgressImages = require("./models/progress_images.js");
@@ -54,31 +54,29 @@ app.use(
 );
 
 const corsOptions = {
-  exposedHeaders: ['Authorization', 'X-Access-Token']
+  exposedHeaders: ["Authorization", "X-Access-Token"],
+  credentials: true,
+  origin: "https://api.sandbox-gethome.my.id",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  optionsSuccessStatus: 204,
 };
 
-app.use(
-  cors({
-    corsOptions,
-    credentials: true,
-    origin: "*",
-  })
-);
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use('/public/assets/images', express.static('public/assets/images/'));
-app.use('/public/assets/document', express.static('public/assets/document/'));
+app.use("/public/assets/images", express.static("public/assets/images/"));
+app.use("/public/assets/document", express.static("public/assets/document/"));
 
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({
     error: {
-      message: error.message
-    }
-  })
-})
+      message: error.message,
+    },
+  });
+});
 
 app.use(authRoutes);
 app.use(accountRoutes);
