@@ -53,8 +53,13 @@ app.use(
   })
 );
 
+const corsOptions = {
+  exposedHeaders: ['Authorization', 'X-Access-Token']
+};
+
 app.use(
   cors({
+    corsOptions,
     credentials: true,
     origin: "*",
   })
