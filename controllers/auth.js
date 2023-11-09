@@ -31,7 +31,7 @@ const login = async (req, res) => {
       }
     );
     res.setHeader("X-Access-Token", accessToken);
-    res.setHeader("Access-Control-Expose-Headers", "X-Access-Token");
+    res.setHeader("Access-Control-Expose-Headers", "*");
     res.status(200).json({
       message: "Anda berhasil login!",
       data: { expiresIn: process.env.EXPIRES_IN },
