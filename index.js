@@ -48,15 +48,16 @@ app.use(
     cookie: {
       //jika menggunakan https atur secure jadi true
       //karna disini masih local menggunakan http maka secure jadi false
-      secure: "auto",
+      secure: false,
+      sameSite: 'none'
     },
   })
 );
 
 const corsOptions = {
-  exposedHeaders: ["Authorization", "X-Access-Token"],
+  exposedHeaders: ["Authorization", "x-access-token"],
   credentials: true,
-  origin: "https://api.sandbox-gethome.my.id",
+  origin: ["http://sandbox-gethome.my.id", "http://localhost:3000"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   optionsSuccessStatus: 204,
 };
