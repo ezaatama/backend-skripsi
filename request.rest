@@ -75,9 +75,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtY
 }
 
 ###
+//progress units
+POST http://localhost:3000/progress
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5OTU4ODMyNSwiZXhwIjoxNjk5NTkxOTI1fQ.r-lTo5mmimq6x9J5yznk4nILL2lX-DBBHRm2CBwr04Y
+
+{
+    "unitId": 1,
+    "percentage": 17,
+    "description": "Percentage 17"
+}
+
+###
 GET http://localhost:3000/list-unit
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5OTQyNDM0NSwiZXhwIjoxNjk5NDI3OTQ1fQ.zBRwYL1BoBK5xPEXAc_6e-T-tUgucLH-2MJFwLTtdYA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5OTU4Njg1NiwiZXhwIjoxNjk5NTkwNDU2fQ.Q1BbraIHllaFhYWw8BaHyMWKoNpx8ZYp6bsUuKkJgCE
 
 ###
 GET http://localhost:3000/detail-unit/64f6e855-c933-47d0-91e8-9b21f07b6249
@@ -88,3 +100,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtY
 GET http://localhost:3000/progress-unit/64f6e855-c933-47d0-91e8-9b21f07b6249
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5OTQzMTE2MCwiZXhwIjoxNjk5NDM0NzYwfQ._VJULj7qGzt7q-IehO1pgRtkeMZbz-yhHg9kfsWqyqQ
+
+
