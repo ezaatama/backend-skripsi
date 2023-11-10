@@ -5,7 +5,7 @@ const verifyToken = (req, res, next) => {
   const token = authHeader && authHeader.split(" ")[1];
   if (token == null) return res.sendStatus(401);
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-    if (err) return res.status(403).json({ message: "Sesi Anda Telah Habis!" });
+    if (err) return res.status(401).json({ message: "Sesi Anda Telah Habis!" });
     req.email = decoded.email;
     req.user = decoded.userId;
 
