@@ -3,6 +3,7 @@ const Buyer = require("../models/buyer");
 const Account = require("../models/accounts");
 const Proyek = require("../models/proyek");
 const TipeProyek = require("../models/tipe_proyek");
+const { Sequelize } = require("sequelize");
 const { validationResult } = require("express-validator");
 const ProgressUnit = require("../models/progress_unit");
 const ProgressImage = require("../models/progress_images");
@@ -68,6 +69,12 @@ const getListUnits = async (req, res) => {
         {
           model: Proyek,
           attributes: ["name", "logo", "address"],
+        },
+        {
+          model: ProgressUnit,
+          attributes: [
+            [Sequelize.fn('MAX', Sequelize.col('progress')), 'totalProgress']
+          ],
         },
       ],
     });
@@ -176,7 +183,7 @@ const getProgressUnits = async (req, res) => {
         {
           model: ProgressUnit,
           attributes: ["progress", "description"],
-          
+
           include: [
             {
               model: ProgressImage,

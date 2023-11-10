@@ -93,6 +93,8 @@ const createProgressUnit = async (req, res) => {
 
   if (!unit) return res.status(404).json({ message: "Unit tidak ditemukan!" });
 
+  if (percentage > 100) return res.status(400).json({ message: "Percentage lebih dari nilai maximal 100!" });
+
   try {
     await ProgressUnit.create({
       unitId: unitId,
