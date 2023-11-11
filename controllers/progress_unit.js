@@ -9,44 +9,52 @@ const getProgressUnits = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const progressUnit = await ProgressUnit.findAndCountAll({
-      attributes: ["progress", "description"],
-      limit,
-      offset,
-      include: [
-        {
-          model: ProgressImage,
-          attributes: ["url"],
+    const accountId = req.role;
+
+    if (accountId === "99") {
+      const progressUnit = await ProgressUnit.findAndCountAll({
+        attributes: ["progress", "description"],
+        limit,
+        offset,
+        include: [
+          {
+            model: ProgressImage,
+            attributes: ["url"],
+          },
+        ],
+      });
+
+      const totalItems = progressUnit.count;
+      const totalPages = Math.ceil(totalItems / limit);
+
+      if (page > totalPages) {
+        // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+        return res.status(204).end();
+      }
+
+      const response = {
+        message: "Progress unit berhasil diambil!",
+        data: progressUnit.rows,
+        meta: {
+          totalItems,
+          totalPages,
+          currentPage: page,
         },
-      ],
-    });
+      };
 
-    const totalItems = progressUnit.count;
-    const totalPages = Math.ceil(totalItems / limit);
+      if (page > 1) {
+        response.meta.prevPage = page - 1;
+      }
+      if (page < totalPages) {
+        response.meta.nextPage = page + 1;
+      }
 
-    if (page > totalPages) {
-      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
-      return res.status(204).end();
+      res.status(200).json(response);
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan melihat data progress unit!" });
     }
-
-    const response = {
-      message: "Progress unit berhasil diambil!",
-      data: progressUnit.rows,
-      meta: {
-        totalItems,
-        totalPages,
-        currentPage: page,
-      },
-    };
-
-    if (page > 1) {
-      response.meta.prevPage = page - 1;
-    }
-    if (page < totalPages) {
-      response.meta.nextPage = page + 1;
-    }
-    
-    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -54,22 +62,30 @@ const getProgressUnits = async (req, res) => {
 
 const getProgressUnitById = async (req, res) => {
   try {
-    const response = await ProgressUnit.findOne({
-      attributes: ["progress", "description"],
-      where: {
-        id: req.params.id || null,
-      },
-    });
+    const accountId = req.role;
 
-    if (!response)
-      return res.status(404).json({
-        message: "Data tidak ditemukan!",
+    if (accountId === "99") {
+      const response = await ProgressUnit.findOne({
+        attributes: ["progress", "description"],
+        where: {
+          id: req.params.id || null,
+        },
       });
 
-    res.status(200).json({
-      message: "Detail progress unit berhasil diambil!",
-      data: response,
-    });
+      if (!response)
+        return res.status(404).json({
+          message: "Data tidak ditemukan!",
+        });
+
+      res.status(200).json({
+        message: "Detail progress unit berhasil diambil!",
+        data: response,
+      });
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan melihat detail progress unit!" });
+    }
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -93,18 +109,29 @@ const createProgressUnit = async (req, res) => {
 
   if (!unit) return res.status(404).json({ message: "Unit tidak ditemukan!" });
 
-  if (percentage > 100) return res.status(400).json({ message: "Percentage lebih dari nilai maximal 100!" });
+  if (percentage > 100)
+    return res
+      .status(400)
+      .json({ message: "Percentage lebih dari nilai maximal 100!" });
 
   try {
-    await ProgressUnit.create({
-      unitId: unitId,
-      progress: percentage,
-      description: description,
-    });
+    const accountId = req.role;
 
-    res.status(201).json({
-      message: "Progress unit berhasil dibuat!",
-    });
+    if (accountId === "99") {
+      await ProgressUnit.create({
+        unitId: unitId,
+        progress: percentage,
+        description: description,
+      });
+
+      res.status(201).json({
+        message: "Progress unit berhasil dibuat!",
+      });
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan membuat data progress unit!" });
+    }
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -127,19 +154,27 @@ const updateProgressUnit = async (req, res) => {
   const { percentage, description, unitId } = req.body;
 
   try {
-    await ProgressUnit.update(
-      {
-        unitId: unitId,
-        progress: percentage,
-        description: description,
-      },
-      {
-        where: {
-          id: progress.id,
+    const accountId = req.role;
+
+    if (accountId === "99") {
+      await ProgressUnit.update(
+        {
+          unitId: unitId,
+          progress: percentage,
+          description: description,
         },
-      }
-    );
-    res.status(200).json({ message: "Data progress unit berhasil diubah!" });
+        {
+          where: {
+            id: progress.id,
+          },
+        }
+      );
+      res.status(200).json({ message: "Data progress unit berhasil diubah!" });
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan mengubah data progress unit!" });
+    }
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -158,12 +193,20 @@ const deleteProgressUnit = async (req, res) => {
     });
 
   try {
-    await ProgressUnit.destroy({
-      where: {
-        id: progress.id,
-      },
-    });
-    res.status(200).json({ message: "Data progress unit berhasil dihapus!" });
+    const accountId = req.role;
+
+    if (accountId === "99") {
+      await ProgressUnit.destroy({
+        where: {
+          id: progress.id,
+        },
+      });
+      res.status(200).json({ message: "Data progress unit berhasil dihapus!" });
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan menghapus data progress unit!" });
+    }
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

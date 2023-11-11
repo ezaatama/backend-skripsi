@@ -8,8 +8,10 @@ const verifyToken = (req, res, next) => {
     if (err) return res.status(401).json({ message: "Sesi Anda Telah Habis!" });
     req.email = decoded.email;
     req.user = decoded.userId;
+    req.role = decoded.role;
 
     console.log(req.user);
+    console.log(req.role);
     next();
   });
 };

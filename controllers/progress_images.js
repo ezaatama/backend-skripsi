@@ -9,41 +9,49 @@ const getProgressImages = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const progressImage = await ProgressImage.findAndCountAll({
-      limit,
-      offset
-    });
+    const accountId = req.role;
 
-    const imageArray = progressImage.rows.map((image) => ({
-      url: image.url,
-    }));
+    if (accountId === "99") {
+      const progressImage = await ProgressImage.findAndCountAll({
+        limit,
+        offset,
+      });
 
-    const totalItems = progressImage.count;
-    const totalPages = Math.ceil(totalItems / limit);
+      const imageArray = progressImage.rows.map((image) => ({
+        url: image.url,
+      }));
 
-    if (page > totalPages) {
-      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
-      return res.status(204).end();
+      const totalItems = progressImage.count;
+      const totalPages = Math.ceil(totalItems / limit);
+
+      if (page > totalPages) {
+        // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+        return res.status(204).end();
+      }
+
+      const response = {
+        message: "Data progress image berhasil diambil!",
+        data: imageArray,
+        meta: {
+          totalItems,
+          totalPages,
+          currentPage: page,
+        },
+      };
+
+      if (page > 1) {
+        response.meta.prevPage = page - 1;
+      }
+      if (page < totalPages) {
+        response.meta.nextPage = page + 1;
+      }
+
+      res.status(200).json(response);
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan melihat data progress image!" });
     }
-
-    const response = {
-      message: "Data progress image berhasil diambil!",
-      data: imageArray,
-      meta: {
-        totalItems,
-        totalPages,
-        currentPage: page,
-      },
-    };
-
-    if (page > 1) {
-      response.meta.prevPage = page - 1;
-    }
-    if (page < totalPages) {
-      response.meta.nextPage = page + 1;
-    }
-    
-    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -51,22 +59,30 @@ const getProgressImages = async (req, res) => {
 
 const getProgressImagesById = async (req, res) => {
   try {
-    const response = await ProgressImage.findOne({
-      attributes: ["url"],
-      where: {
-        id: req.params.id || null,
-      },
-    });
+    const accountId = req.role;
 
-    if (!response)
-      return res.status(404).json({
-        message: "Data tidak ditemukan!",
+    if (accountId === "99") {
+      const response = await ProgressImage.findOne({
+        attributes: ["url"],
+        where: {
+          id: req.params.id || null,
+        },
       });
 
-    res.status(200).json({
-      message: "Detail progress image berhasil diambil!",
-      data: response,
-    });
+      if (!response)
+        return res.status(404).json({
+          message: "Data tidak ditemukan!",
+        });
+
+      res.status(200).json({
+        message: "Detail progress image berhasil diambil!",
+        data: response,
+      });
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan melihat detail progress image!" });
+    }
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -104,17 +120,25 @@ const createProgressImages = async (req, res) => {
   const images = req.files;
 
   try {
-    for (const image of images) {
-      await ProgressImage.create({
-        progressUnitId: progressUnitId,
-        url: `/public/assets/images/${image.filename}`,
+    const accountId = req.role;
+
+    if (accountId === "99") {
+      for (const image of images) {
+        await ProgressImage.create({
+          progressUnitId: progressUnitId,
+          url: `/public/assets/images/${image.filename}`,
+        });
+      }
+      res.status(201).json({
+        message: "Progress images berhasil dibuat!",
       });
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan membuat data progress image!" });
     }
-    res.status(201).json({
-      message: "Progress images berhasil dibuat!",
-    });
   } catch (error) {
-    res.status(404).json({
+    res.status(500).json({
       message: error.message,
     });
   }
@@ -136,23 +160,32 @@ const updateProgressImage = async (req, res) => {
   const images = req.files;
 
   try {
-    for (const image of images) {
-      await ProgressImage.update(
-        {
-          progressUnitId: progressUnitId,
-          url: `/public/assets/images/${image.filename}`
-        }, {
-          where: {
-            id: progressImage.id
+    const accountId = req.role;
+
+    if (accountId === "99") {
+      for (const image of images) {
+        await ProgressImage.update(
+          {
+            progressUnitId: progressUnitId,
+            url: `/public/assets/images/${image.filename}`,
+          },
+          {
+            where: {
+              id: progressImage.id,
+            },
           }
-        }
-      );
+        );
+      }
+      res.status(201).json({
+        message: "Progress images berhasil diubah!",
+      });
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan mengubah data progress image!" });
     }
-    res.status(201).json({
-      message: "Progress images berhasil diubah!",
-    });
   } catch (error) {
-    res.status(404).json({
+    res.status(500).json({
       message: error.message,
     });
   }
@@ -171,12 +204,22 @@ const deleteProgressImage = async (req, res) => {
     });
 
   try {
-    await ProgressImage.destroy({
-      where: {
-        id: progressImage.id,
-      },
-    });
-    res.status(200).json({ message: "Data progress image berhasil dihapus!" });
+    const accountId = req.role;
+
+    if (accountId === "99") {
+      await ProgressImage.destroy({
+        where: {
+          id: progressImage.id,
+        },
+      });
+      res
+        .status(200)
+        .json({ message: "Data progress image berhasil dihapus!" });
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan menghapus data progress image!" });
+    }
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
