@@ -42,7 +42,8 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "email": "ezatama33@gmail.com",
+    //"email": "ezatama33@gmail.com",
+    "email": "admin@gmail.com",
     "password": "123456"
 }
 
@@ -50,13 +51,25 @@ Content-Type: application/json
 //tipe proyek
 GET http://localhost:3000/tipe-proyek
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5OTQyNDM0NSwiZXhwIjoxNjk5NDI3OTQ1fQ.zBRwYL1BoBK5xPEXAc_6e-T-tUgucLH-2MJFwLTtdYA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5OTcyNDUxNiwiZXhwIjoxNjk5NzI4MTE2fQ.j2aIQwANxODIlyFiLmydH0_fU5vs8dK2uAUQqs6nvdQ
+
+###
+//profile
+GET http://localhost:3000/profile
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNjk5NzI5OTU4LCJleHAiOjE2OTk3MzM1NTh9.4QuED548oMOt92JYupmx1iKsEGt9SYiN_XUn5izMbpY
+
+###
+//units
+GET http://localhost:3000/units
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNjk5NzI5OTU4LCJleHAiOjE2OTk3MzM1NTh9.4QuED548oMOt92JYupmx1iKsEGt9SYiN_XUn5izMbpY
 
 ###
 //proyek
 GET http://localhost:3000/proyek
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5OTQyNDM0NSwiZXhwIjoxNjk5NDI3OTQ1fQ.zBRwYL1BoBK5xPEXAc_6e-T-tUgucLH-2MJFwLTtdYA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNjk5NzI1NzQxLCJleHAiOjE2OTk3MjkzNDF9.Ke_pDf29HsvyE4JqiozZl6dIG1E6ucz0pLslwBdXusM
 
 ###
 //units
