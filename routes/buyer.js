@@ -1,5 +1,5 @@
 const express = require("express");
-const { getBuyer, getBuyerById, createBuyer, updateBuyer, deleteBuyer } = require("../controllers/buyer");
+const { getBuyer, getProfile, getBuyerById, createBuyer, updateBuyer, deleteBuyer } = require("../controllers/buyer");
 const middlewareToken = require("../middleware/verifyToken");
 const router = express.Router();
 const multer = require("multer");
@@ -37,6 +37,7 @@ const uploadSingleFile = multer({
 }).single("profile_picture");
 
 router.get('/buyer', middlewareToken, getBuyer);
+router.get('/profile', middlewareToken, getProfile);
 router.get('/buyer/:id', middlewareToken, getBuyerById);
 router.post('/buyer', middlewareToken, uploadSingleFile, createBuyer);
 router.patch('/buyer/:id', middlewareToken, uploadSingleFile, updateBuyer);
