@@ -42,8 +42,8 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    //"email": "ezatama33@gmail.com",
-    "email": "admin@gmail.com",
+    "email": "ezatama33@gmail.com",
+    //"email": "admin@gmail.com",
     "password": "123456"
 }
 
@@ -112,6 +112,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtY
 ###
 GET http://localhost:3000/progress-unit/64f6e855-c933-47d0-91e8-9b21f07b6249
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5OTQzMTE2MCwiZXhwIjoxNjk5NDM0NzYwfQ._VJULj7qGzt7q-IehO1pgRtkeMZbz-yhHg9kfsWqyqQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTcwMDAzNjM1OCwiZXhwIjoxNzAwMDM5OTU4fQ.IjjRFna29qnoyg01Q48eV5KUfhh6yl64lJBBAXQS7nY
 
 

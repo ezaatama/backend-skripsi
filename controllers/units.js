@@ -188,7 +188,7 @@ const getProgressUnits = async (req, res) => {
       include: [
         {
           model: ProgressUnit,
-          attributes: ["progress", "description"],
+          attributes: ["progress", "description", "createdAt"],
 
           include: [
             {
