@@ -1,7 +1,12 @@
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize('sandboxg_db_homers', 'sandboxg_ezaatama', 'rezaputra13', {
-    host: "api.sandbox-gethome.my.id",
+// const sequelize = new Sequelize('sandboxg_db_homers', 'sandboxg_ezaatama', 'rezaputra13', {
+//     host: "api.sandbox-gethome.my.id",
+//     dialect: "mysql"
+// })
+
+const sequelize = new Sequelize('sandboxg_db_dev_homers', 'sandboxg_ezaatama', 'rezaputra13', {
+    host: "api-dev.sandbox-gethome.my.id",
     dialect: "mysql"
 })
 
