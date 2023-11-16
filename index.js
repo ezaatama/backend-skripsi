@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const session = require("express-session");
+const session = require("cookie-session");
 const dotEnv = require("dotenv");
 const bodyParser = require("body-parser");
 const app = express();
@@ -40,6 +40,8 @@ dotEnv.config();
 //     console.error(err);
 //   });
 
+app.set('trust proxy', 1);
+
 app.use(
   session({
     secret: process.env.SESS_SECRET,
@@ -49,7 +51,8 @@ app.use(
       //jika menggunakan https atur secure jadi true
       //karna disini masih local menggunakan http maka secure jadi false
       secure: false,
-      sameSite: 'none'
+      sameSite: "none",
+      maxAge: 60000,
     },
   })
 );
@@ -77,6 +80,10 @@ app.use((error, req, res, next) => {
       message: error.message,
     },
   });
+  if (!req.session) {
+    return next(new Error("Oh no")); //handle error
+  }
+  next();
 });
 
 app.use(authRoutes);
