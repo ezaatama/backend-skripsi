@@ -81,16 +81,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtY
 //units
 POST http://localhost:3000/units
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5OTQyNDM0NSwiZXhwIjoxNjk5NDI3OTQ1fQ.zBRwYL1BoBK5xPEXAc_6e-T-tUgucLH-2MJFwLTtdYA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzAwNDAzODM5LCJleHAiOjE3MDA0MDc0Mzl9.IFxPX1jtsR-mjmEGt6oSfTUbVaHU_zoYeM-ZFqeYEM8
 
 {
-    "name": "Unit Proyek Pertama",
-    "luas_tanah": 65.2,
-    "price": 200500000,
+    "name": "Unit Proyek Keempat",
+    "luas_tanah": 66.7,
+    "price": 202500000,
     "status": 1,
     "tipeProyekId": 1,
-    "proyekId": 1
-
+    "proyekId": 1,
+    "accountId": 3
 }
 
 ###

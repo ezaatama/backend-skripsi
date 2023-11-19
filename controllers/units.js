@@ -278,7 +278,7 @@ const getUnitById = async (req, res) => {
 };
 
 const createUnit = async (req, res) => {
-  const { name, luas_tanah, price, status, tipeProyekId, proyekId, buyer_id } =
+  const { name, luas_tanah, price, status, tipeProyekId, proyekId, accountId } =
     req.body;
 
   const errors = validationResult(req);
@@ -294,6 +294,12 @@ const createUnit = async (req, res) => {
 
   const tipeProyek = await TipeProyek.findByPk(tipeProyekId);
 
+  const isBuyer = await Account.findByPk(accountId);
+
+  if (!isBuyer) {
+    return res.status(404).json({ message: "Akun pembeli tidak ditemukan!" });
+  }
+
   if (!proyek)
     return res.status(404).json({ message: "Proyek tidak ditemukan!" });
 
@@ -301,9 +307,9 @@ const createUnit = async (req, res) => {
     return res.status(404).json({ message: "Tipe proyek tidak ditemukan!" });
 
   try {
-    const accountId = req.role;
+    const idAccount = req.role;
 
-    if (accountId === "99") {
+    if (idAccount === "99") {
       const unit = await Units.create({
         name: name,
         luas_tanah: luas_tanah,
@@ -311,25 +317,12 @@ const createUnit = async (req, res) => {
         status: status,
         tipeProyekId: tipeProyekId,
         proyekId: proyekId,
+        accountId: accountId,
       });
-
-      if (buyer_id && buyer_id.length > 0) {
-        const buyers = await Buyer.findAll({
-          where: {
-            id: buyer_id,
-          },
-        });
-
-        if (buyers.length > 0) {
-          await unit.addBuyers(buyers);
-        } else {
-          res.status(404).json({ message: "Pembeli tidak ditemukan" });
-          return;
-        }
-      }
 
       res.status(201).json({
         message: "Data Unit dan Pembeli berhasil dibuat dan dihubungkan!",
+        data: unit,
       });
     } else {
       res.status(403).json({ message: "Tidak diizinkan membuat data unit!" });
