@@ -1,5 +1,6 @@
 const Buyer = require("../models/buyer");
 const Unit = require("../models/units");
+const BuyerHasUnits = require("../models/buyer_has_units");
 const Account = require("../models/accounts");
 const axios = require("axios");
 const { validationResult } = require("express-validator");
@@ -106,7 +107,8 @@ const getBuyerById = async (req, res) => {
             model: Unit,
             attributes: ["uuid", "name", "luas_tanah", "price"],
             through: {
-              attributes: [],
+              BuyerHasUnits,
+              attributes: []
             },
           },
         ],

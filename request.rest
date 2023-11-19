@@ -42,8 +42,8 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "email": "ezatama33@gmail.com",
-    //"email": "admin@gmail.com",
+    //"email": "ezatama33@gmail.com",
+    "email": "admin@gmail.com",
     "password": "123456"
 }
 
@@ -63,7 +63,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtY
 //units
 GET http://localhost:3000/units
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNjk5NzI5OTU4LCJleHAiOjE2OTk3MzM1NTh9.4QuED548oMOt92JYupmx1iKsEGt9SYiN_XUn5izMbpY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzAwNDAwNzczLCJleHAiOjE3MDA0MDQzNzN9.qFBKDZa127IXtBWoQjJMLc0ILIXKksF0TAPrUh1Sd7E
+
+###
+//units
+GET http://localhost:3000/units/96d8b13c-0575-477d-891f-ab8694dcba26
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzAwNDAwNzczLCJleHAiOjE3MDA0MDQzNzN9.qFBKDZa127IXtBWoQjJMLc0ILIXKksF0TAPrUh1Sd7E
 
 ###
 //proyek
@@ -103,6 +109,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtY
 GET http://localhost:3000/list-unit
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5OTU4Njg1NiwiZXhwIjoxNjk5NTkwNDU2fQ.Q1BbraIHllaFhYWw8BaHyMWKoNpx8ZYp6bsUuKkJgCE
+
+###
+GET http://localhost:3000/buyer
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzAwNDAwNzczLCJleHAiOjE3MDA0MDQzNzN9.qFBKDZa127IXtBWoQjJMLc0ILIXKksF0TAPrUh1Sd7E
+
+###
+GET http://localhost:3000/buyer/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzAwNDAwNzczLCJleHAiOjE3MDA0MDQzNzN9.qFBKDZa127IXtBWoQjJMLc0ILIXKksF0TAPrUh1Sd7E
 
 ###
 GET http://localhost:3000/detail-unit/64f6e855-c933-47d0-91e8-9b21f07b6249
