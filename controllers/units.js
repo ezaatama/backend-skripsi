@@ -18,7 +18,7 @@ const getAllUnits = async (req, res) => {
 
     if (accountId === "99") {
       const units = await Units.findAndCountAll({
-        attributes: ["uuid", "name", "luas_tanah", "price", "status"],
+        attributes: ["id", "uuid", "name", "luas_tanah", "price", "status"],
         offset,
         limit,
       });
