@@ -275,12 +275,6 @@ const deleteBuyer = async (req, res) => {
       message: "Buyer tidak ditemukan!",
     });
 
-  const account = await Account.findByPk(accountId);
-
-  if (!account) {
-    res.status(404).json({ message: "Account tidak ditemukan." });
-  }
-
   try {
 
     const accountId = req.role;
