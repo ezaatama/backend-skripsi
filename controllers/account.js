@@ -7,7 +7,7 @@ const getUsers = async (req, res) => {
   const offset = (page - 1) * limit;
   try {
     const accounts = await Accounts.findAndCountAll({
-      attributes: ["uuid", "name", "email", "role"],
+      attributes: ["id", "uuid", "name", "email", "role"],
       limit,
       offset
     });
@@ -146,7 +146,7 @@ const deleteUser = async (req, res) => {
       message: "Akun tidak ditemukan!",
     });
   try {
-    await User.destroy({
+    await Accounts.destroy({
       where: {
         uuid: user.uuid,
       },
