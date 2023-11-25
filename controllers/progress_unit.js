@@ -13,7 +13,7 @@ const getProgressUnits = async (req, res) => {
 
     if (accountId === "99") {
       const progressUnit = await ProgressUnit.findAndCountAll({
-        attributes: ["progress", "description"],
+        attributes: ["id", "progress", "description"],
         limit,
         offset,
         include: [
@@ -66,7 +66,7 @@ const getProgressUnitById = async (req, res) => {
 
     if (accountId === "99") {
       const response = await ProgressUnit.findOne({
-        attributes: ["progress", "description"],
+        attributes: ["id", "progress", "description"],
         where: {
           id: req.params.id || null,
         },
