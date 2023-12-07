@@ -17,14 +17,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtY
 //Create user
 POST http://localhost:3000/accounts
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTY5Nzc4MzI3NCwiZXhwIjoxNjk3Nzg2ODc0fQ.qwenc5aO2DvT5L6FzeCzZfYJS7zhSqYvIF-Ha5ixm0g
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTcwMTkxMjU2MCwiZXhwIjoxNzAxOTE2MTYwfQ.a-Eb-jaL9HN02xLcm1emQ9GhpIPgZbRLevpsCdDUlxY
 
 {
     "name": "Reza Putra Admin",
-    "email": "admin@gmail.com",
+    "email": "superadmin2@gmail.com",
     "password": "123456",
     "confPassword": "123456",
-    "role": "99"
+    "role": "1"
 }
 
 ###
@@ -35,7 +35,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtY
 
 {
     "name": "Reza Putra Pratama",
-    "email": "ezatama33@gmail.com",
+    "email": "ezatama@gmail.com",
     "password": "123456",
     "confPassword": "123456",
     "role": "98"
@@ -47,8 +47,8 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    //"email": "ezatama33@gmail.com",
-    "email": "admin@gmail.com",
+    "email": "ezatama33@gmail.com",
+    //"email": "superadmin@gmail.com",
     "password": "123456"
 }
 
@@ -123,7 +123,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtY
 ###
 GET http://localhost:3000/progress-unit/64f6e855-c933-47d0-91e8-9b21f07b6249
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTcwMDcxNTAxMCwiZXhwIjoxNzAwNzE4NjEwfQ.RQGvpGzRpHLBBaucbScB7RALVji3MWVMN-s20k2KDl4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTcwMTkxOTAxNiwiZXhwIjoxNzAxOTIyNjE2fQ.4hZoJcF5Hj1g502Z8xrvOg4rLoNZplX31sXm21IjCCQ
+
+###
+GET http://localhost:3000/me
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTcwMTkxMzEwMSwiZXhwIjoxNzAxOTE2NzAxfQ.KQzBIJXQtFvQWP9eHw-K0ZH5fHyib9DAOZ1Q6FJhIN0
 
 ###
 GET http://localhost:3000/buyer
