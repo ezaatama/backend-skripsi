@@ -9,6 +9,12 @@ const login = async (req, res) => {
         email: req.body.email,
       },
     });
+    if (!user) {
+      return res.status(400).json({
+        message: "Email tidak terdaftar!",
+      });
+    }
+
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match)
       return res.status(400).json({
