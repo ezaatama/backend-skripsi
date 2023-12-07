@@ -36,7 +36,7 @@ const Accounts = sequelize.define(
       },
     },
     role: {
-      type: DataTypes.ENUM("98", "99"),
+      type: DataTypes.ENUM("98", "99", "1"),
       allowNull: false,
     },
   },
