@@ -9,7 +9,7 @@ const getUsers = async (req, res) => {
     const accounts = await Accounts.findAndCountAll({
       attributes: ["id", "uuid", "name", "email", "role"],
       limit,
-      offset
+      offset,
     });
 
     const totalItems = accounts.count;
@@ -28,7 +28,7 @@ const getUsers = async (req, res) => {
         totalPages,
         currentPage: page,
       },
-    }
+    };
 
     if (page > 1) {
       response.meta.prevPage = page - 1;
@@ -53,15 +53,23 @@ const createUser = async (req, res) => {
   const salt = bcrypt.genSaltSync();
   const hasPassword = await bcrypt.hash(password, salt);
   try {
-    await Accounts.create({
-      name: name,
-      email: email,
-      password: hasPassword,
-      role: role,
-    });
-    res.status(201).json({
-      message: "Akun berhasil didaftarkan!",
-    });
+    const accountId = req.role;
+
+    if (accountId === "1") {
+      await Accounts.create({
+        name: name,
+        email: email,
+        password: hasPassword,
+        role: role,
+      });
+      res.status(201).json({
+        message: "Akun berhasil didaftarkan!",
+      });
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan membuat data account!" });
+    }
   } catch (error) {
     res.status(400).json({
       message: error.message,
@@ -116,20 +124,26 @@ const updateUser = async (req, res) => {
       .json({ message: "Password dan Konfirmasi Password tidak cocok!" });
 
   try {
-    await Accounts.update(
-      {
-        name: name,
-        email: email,
-        password: hashPassword,
-        role: role,
-      },
-      {
-        where: {
-          uuid: user.uuid,
+    const accountId = req.role;
+
+    if (accountId === "1") {
+      await Accounts.update(
+        {
+          name: name,
+          email: email,
+          password: hashPassword,
+          role: role,
         },
-      }
-    );
-    res.status(200).json({ message: "Data User berhasil diubah!" });
+        {
+          where: {
+            uuid: user.uuid,
+          },
+        }
+      );
+      res.status(200).json({ message: "Data User berhasil diubah!" });
+    } else {
+      res.status(403).json({ message: "Tidak diizinkan update data account!" });
+    }
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -146,12 +160,20 @@ const deleteUser = async (req, res) => {
       message: "Akun tidak ditemukan!",
     });
   try {
-    await Accounts.destroy({
-      where: {
-        uuid: user.uuid,
-      },
-    });
-    res.status(200).json({ message: "Data User berhasil dihapus!" });
+    const accountId = req.role;
+
+    if (accountId === "1") {
+      await Accounts.destroy({
+        where: {
+          uuid: user.uuid,
+        },
+      });
+      res.status(200).json({ message: "Data User berhasil dihapus!" });
+    } else {
+      res
+        .status(403)
+        .json({ message: "Tidak diizinkan menghapus data account!" });
+    }
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -162,5 +184,5 @@ module.exports = {
   createUser,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
 };
