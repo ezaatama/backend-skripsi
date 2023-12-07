@@ -18,7 +18,7 @@ const multer = require("multer");
 const upload = multer();
 const Buyer = require("./models/buyer.js");
 const ProgressImages = require("./models/progress_images.js");
-const TipeProyek = require("./models/tipe_proyek.js");
+const Accounts = require("./models/accounts.js");
 const Proyek = require("./models/proyek.js");
 const Units = require("./models/units.js");
 
@@ -31,7 +31,7 @@ dotEnv.config();
 //     // Units.sync({alter: true});
 //     // TipeProyek.sync({alter: true});
 //     // Proyek.sync({alter: true});
-//     ProgressImages.sync({alter: true});
+//     Accounts.sync({alter: true});
 //     // user.sync({force: true});
 //     // roles.drop();
 //     // user.drop();
