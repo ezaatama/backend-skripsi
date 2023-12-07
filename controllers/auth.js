@@ -46,7 +46,7 @@ const me = async (req, res) => {
     return res.status(401).json({ message: "Sesi Anda telah habis!" });
   }
   const user = await Accounts.findOne({
-    attributes: ["uuid", "name", "email"],
+    attributes: ["id", "uuid", "name", "email"],
     where: {
       id: req.session.userId,
     },
@@ -54,7 +54,8 @@ const me = async (req, res) => {
   if (!user) return res.status(404).json({ message: "Akun tidak ditemukan!" });
   res.status(200).json({
     message: "Data status berhasil diambil",
-    data: user});
+    data: user,
+  });
 };
 
 const logout = async (req, res) => {
@@ -67,12 +68,10 @@ const logout = async (req, res) => {
       });
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Internal server error!",
-        serverMessage: error.message,
-      });
+    res.status(500).json({
+      message: "Internal server error!",
+      serverMessage: error.message,
+    });
   }
 };
 
