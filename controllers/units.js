@@ -170,17 +170,41 @@ const getDetailUnit = async (req, res) => {
   }
 };
 
+const setMetadata = async (req, res, next) => {
+  try {
+    const pageSize = 10; // Sesuaikan dengan jumlah item per halaman yang Anda inginkan
+
+    // Hitung total item
+    const totalItem = await ProgressUnit.count();
+
+    // Hitung total halaman
+    const totalPage = Math.ceil(totalItem / pageSize);
+
+    // Ambil halaman saat ini dari parameter permintaan atau tetapkan nilai default
+    const currentPage = parseInt(req.query.page, 10) || 1;
+
+    // Sertakan metadata dalam res.locals untuk diakses di middleware berikutnya atau di handler rute
+    res.locals.metadata = {
+      totalItem,
+      totalPage,
+      currentPage,
+    };
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getProgressUnits = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const offset = (page - 1) * limit;
+  const pageSize = 10;
+  const currentPage = parseInt(req.query.page, 0) || 1;
+
   try {
     const accountId = req.user;
 
-    const response = await Units.findAndCountAll({
+    const response = await Units.findOne({
       attributes: [],
-      offset,
-      limit,
       where: {
         accountId: accountId,
         uuid: req.params.uuid || null,
@@ -205,28 +229,28 @@ const getProgressUnits = async (req, res) => {
         message: "Data tidak ditemukan!",
       });
 
-    const totalItems = response.count;
-    const totalPages = Math.ceil(totalItems / limit);
+    const progressUnits = response.progress_units || [];
 
-    if (page > totalPages) {
-      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
-      return res.status(204).end();
-    }
+    // Hitung total item
+    const totalItem = progressUnits.length;
 
-    if (page > 1) {
-      response.meta.prevPage = page - 1;
-    }
-    if (page < totalPages) {
-      response.meta.nextPage = page + 1;
-    }
+    // Hitung total halaman
+    const totalPages = Math.ceil(totalItem / pageSize);
+
+    // Potong data berdasarkan halaman
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedProgressUnits = progressUnits.slice(startIndex, endIndex);
 
     res.status(200).json({
       message: "Progress unit berhasil diambil!",
-      data: response.rows,
-      meta: {
-        totalItems,
-        totalPages,
-        currentPage: page,
+      data: {
+        progress_units: paginatedProgressUnits,
+        meta: {
+          totalPages,
+          currentPage,
+          totalItem,
+        },
       },
     });
   } catch (error) {
@@ -405,6 +429,7 @@ const deleteUnit = async (req, res) => {
 };
 
 module.exports = {
+  setMetadata,
   getAllUnits,
   getListUnits,
   getDetailUnit,
