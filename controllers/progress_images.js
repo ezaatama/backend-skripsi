@@ -9,49 +9,41 @@ const getProgressImages = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const accountId = req.role;
+    const progressImage = await ProgressImage.findAndCountAll({
+      limit,
+      offset,
+    });
 
-    if (accountId === "99") {
-      const progressImage = await ProgressImage.findAndCountAll({
-        limit,
-        offset,
-      });
+    const imageArray = progressImage.rows.map((image) => ({
+      url: image.url,
+    }));
 
-      const imageArray = progressImage.rows.map((image) => ({
-        url: image.url,
-      }));
+    const totalItems = progressImage.count;
+    const totalPages = Math.ceil(totalItems / limit);
 
-      const totalItems = progressImage.count;
-      const totalPages = Math.ceil(totalItems / limit);
-
-      if (page > totalPages) {
-        // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
-        return res.status(204).end();
-      }
-
-      const response = {
-        message: "Data progress image berhasil diambil!",
-        data: imageArray,
-        meta: {
-          totalItems,
-          totalPages,
-          currentPage: page,
-        },
-      };
-
-      if (page > 1) {
-        response.meta.prevPage = page - 1;
-      }
-      if (page < totalPages) {
-        response.meta.nextPage = page + 1;
-      }
-
-      res.status(200).json(response);
-    } else {
-      res
-        .status(403)
-        .json({ message: "Tidak diizinkan melihat data progress image!" });
+    if (page > totalPages) {
+      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+      return res.status(204).end();
     }
+
+    const response = {
+      message: "Data progress image berhasil diambil!",
+      data: imageArray,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+      },
+    };
+
+    if (page > 1) {
+      response.meta.prevPage = page - 1;
+    }
+    if (page < totalPages) {
+      response.meta.nextPage = page + 1;
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -59,30 +51,22 @@ const getProgressImages = async (req, res) => {
 
 const getProgressImagesById = async (req, res) => {
   try {
-    const accountId = req.role;
+    const response = await ProgressImage.findOne({
+      attributes: ["url"],
+      where: {
+        id: req.params.id || null,
+      },
+    });
 
-    if (accountId === "99") {
-      const response = await ProgressImage.findOne({
-        attributes: ["url"],
-        where: {
-          id: req.params.id || null,
-        },
+    if (!response)
+      return res.status(404).json({
+        message: "Data tidak ditemukan!",
       });
 
-      if (!response)
-        return res.status(404).json({
-          message: "Data tidak ditemukan!",
-        });
-
-      res.status(200).json({
-        message: "Detail progress image berhasil diambil!",
-        data: response,
-      });
-    } else {
-      res
-        .status(403)
-        .json({ message: "Tidak diizinkan melihat detail progress image!" });
-    }
+    res.status(200).json({
+      message: "Detail progress image berhasil diambil!",
+      data: response,
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,

@@ -11,44 +11,38 @@ const getBuyer = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const accountId = req.role;
+    const buyer = await Buyer.findAndCountAll({
+      attributes: ["id", "name", "profile_picture", "phoneNumber"],
+      offset,
+      limit,
+    });
 
-    if (accountId === "99") {
-      const buyer = await Buyer.findAndCountAll({
-        attributes: ["id", "name", "profile_picture", "phoneNumber"],
-        offset,
-        limit,
-      });
+    const totalItems = buyer.count;
+    const totalPages = Math.ceil(totalItems / limit);
 
-      const totalItems = buyer.count;
-      const totalPages = Math.ceil(totalItems / limit);
-
-      if (page > totalPages) {
-        // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
-        return res.status(204).end();
-      }
-
-      const response = {
-        message: "Data buyer berhasil diambil!",
-        data: buyer.rows,
-        meta: {
-          totalItems,
-          totalPages,
-          currentPage: page,
-        },
-      };
-
-      if (page > 1) {
-        response.meta.prevPage = page - 1;
-      }
-      if (page < totalPages) {
-        response.meta.nextPage = page + 1;
-      }
-
-      res.status(200).json(response);
-    } else {
-      res.status(403).json({ message: "Tidak diizinkan melihat data buyer!" });
+    if (page > totalPages) {
+      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+      return res.status(204).end();
     }
+
+    const response = {
+      message: "Data buyer berhasil diambil!",
+      data: buyer.rows,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+      },
+    };
+
+    if (page > 1) {
+      response.meta.prevPage = page - 1;
+    }
+    if (page < totalPages) {
+      response.meta.nextPage = page + 1;
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -57,7 +51,7 @@ const getBuyer = async (req, res) => {
 const getProfile = async (req, res) => {
   try {
     const accountId = req.user;
-    
+
     const response = await Buyer.findOne({
       attributes: ["name", "profile_picture", "phoneNumber"],
       where: {
@@ -66,9 +60,9 @@ const getProfile = async (req, res) => {
       include: [
         {
           model: Account,
-          attributes: ['email']
-        }
-      ]
+          attributes: ["email"],
+        },
+      ],
     });
 
     if (!response)
@@ -82,7 +76,7 @@ const getProfile = async (req, res) => {
         name: response.name,
         email: response.account.email,
         profilePicture: response.profile_picture,
-        phoneNumber: response.phoneNumber
+        phoneNumber: response.phoneNumber,
       },
     });
   } catch (error) {
@@ -90,44 +84,36 @@ const getProfile = async (req, res) => {
       message: error.message,
     });
   }
-}
+};
 
 const getBuyerById = async (req, res) => {
   try {
-    const accountId = req.role;
-
-    if (accountId === "99") {
-      const response = await Buyer.findOne({
-        attributes: ["id", "name", "profile_picture", "phoneNumber"],
-        where: {
-          id: req.params.id || null,
-        },
-        include: [
-          {
-            model: Unit,
-            attributes: ["uuid", "name", "luas_tanah", "price"],
-            through: {
-              BuyerHasUnits,
-              attributes: []
-            },
+    const response = await Buyer.findOne({
+      attributes: ["id", "name", "profile_picture", "phoneNumber"],
+      where: {
+        id: req.params.id || null,
+      },
+      include: [
+        {
+          model: Unit,
+          attributes: ["uuid", "name", "luas_tanah", "price"],
+          through: {
+            BuyerHasUnits,
+            attributes: [],
           },
-        ],
+        },
+      ],
+    });
+
+    if (!response)
+      return res.status(404).json({
+        message: "Data tidak ditemukan!",
       });
 
-      if (!response)
-        return res.status(404).json({
-          message: "Data tidak ditemukan!",
-        });
-
-      res.status(200).json({
-        message: "Detail buyer berhasil diambil!",
-        data: response,
-      });
-    } else {
-      res
-        .status(403)
-        .json({ message: "Tidak diizinkan melihat detail buyer!" });
-    }
+    res.status(200).json({
+      message: "Detail buyer berhasil diambil!",
+      data: response,
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -201,6 +187,8 @@ const createBuyer = async (req, res) => {
 };
 
 const updateBuyer = async (req, res) => {
+  const idAccount = req.role;
+
   const buyer = await Buyer.findOne({
     where: {
       id: req.params.id || null,
@@ -210,49 +198,25 @@ const updateBuyer = async (req, res) => {
   if (!buyer)
     return res.status(404).json({ message: "Data buyer tidak ditemukan!" });
 
-  const account = await Account.findByPk(accountId);
+  const { accountId, profile_picture, name, phoneNumber } = req.body;
 
-  if (!account) {
-    res.status(404).json({ message: "Account tidak ditemukan." });
-  }
+  const updatedFields = {};
 
-  const { accountId, name, phoneNumber } = req.body;
+  if (name) updatedFields.name = name;
+
+  if (profile_picture)
+    updatedFields.profile_picture = `/public/assets/images/${req.file.filename}`;
+
+  if (accountId) updatedFields.accountId = accountId;
+  if (phoneNumber) updatedFields.phoneNumber = phoneNumber;
 
   try {
-    const idAccount = req.role;
-
     if (idAccount === "99") {
-      let profilePictureUrl = `/public/assets/images/${req.file.filename}`;
-
-      if (!profilePictureUrl) {
-        const uiAvatarsResponse = await axios.get(
-          `https://ui-avatars.com/api/?name=${name}&size=200`,
-          {
-            responseType: "arraybuffer",
-          }
-        );
-        const base64 = Buffer.from(uiAvatarsResponse.data, "binary").toString(
-          "base64"
-        ); // Konversi ke base64
-        profilePictureUrl = `data:image/png;base64,${base64}`;
-        profilePictureUrl = profilePictureUrl.replace(
-          "data:image/png;base64,",
-          "https://ui-avatars.com/api/?format=png&name="
-        );
-      }
-      await Buyer.update(
-        {
-          name: name,
-          profile_picture: profilePictureUrl,
-          accountId: accountId,
-          phoneNumber: phoneNumber,
+      await Buyer.update(updatedFields, {
+        where: {
+          id: buyer.id,
         },
-        {
-          where: {
-            id: buyer.id,
-          },
-        }
-      );
+      });
 
       res.status(201).json({ message: "Buyer berhasil diupdate!" });
     } else {
@@ -276,11 +240,9 @@ const deleteBuyer = async (req, res) => {
     });
 
   try {
-
     const accountId = req.role;
 
     if (accountId === "99") {
-
       await Buyer.destroy({
         where: {
           id: buyer.id,

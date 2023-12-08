@@ -9,69 +9,63 @@ const getAllProyek = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const accountId = req.role;
-
-    if (accountId === "99") {
-      const proyek = await Proyek.findAndCountAll({
-        attributes: [
-          "id",
-          "slug",
-          "name",
-          "logo",
-          "price_start_from",
-          "address",
-          "proyek_description",
-          "siteplan",
-          "facilities",
-        ],
-        offset,
-        limit,
-        include: [
-          {
-            model: TIPE_PROYEK,
-            attributes: ["id", "name"],
-          },
-        ],
-      });
-
-      const responseWithFacilitiesArray = proyek.rows.map((proyek) => {
-        const facilitiesArray = proyek.facilities.split(", ").map((item) => {
-          const [label, content] = item.split(": ");
-          return { label, content };
-        });
-        proyek.facilities = facilitiesArray;
-        return proyek;
-      });
-
-      const totalItems = proyek.count;
-      const totalPages = Math.ceil(totalItems / limit);
-
-      if (page > totalPages) {
-        // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
-        return res.status(204).end();
-      }
-
-      const response = {
-        message: "Data proyek berhasil diambil",
-        data: responseWithFacilitiesArray,
-        meta: {
-          totalItems,
-          totalPages,
-          currentPage: page,
+    const proyek = await Proyek.findAndCountAll({
+      attributes: [
+        "id",
+        "slug",
+        "name",
+        "logo",
+        "price_start_from",
+        "address",
+        "proyek_description",
+        "siteplan",
+        "facilities",
+      ],
+      offset,
+      limit,
+      include: [
+        {
+          model: TIPE_PROYEK,
+          attributes: ["id", "name"],
         },
-      };
+      ],
+    });
 
-      if (page > 1) {
-        response.meta.prevPage = page - 1;
-      }
-      if (page < totalPages) {
-        response.meta.nextPage = page + 1;
-      }
+    const responseWithFacilitiesArray = proyek.rows.map((proyek) => {
+      const facilitiesArray = proyek.facilities.split(", ").map((item) => {
+        const [label, content] = item.split(": ");
+        return { label, content };
+      });
+      proyek.facilities = facilitiesArray;
+      return proyek;
+    });
 
-      res.status(200).json(response);
-    } else {
-      res.status(403).json({ message: "Tidak diizinkan melihat data proyek!" });
+    const totalItems = proyek.count;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    if (page > totalPages) {
+      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+      return res.status(204).end();
     }
+
+    const response = {
+      message: "Data proyek berhasil diambil",
+      data: responseWithFacilitiesArray,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+      },
+    };
+
+    if (page > 1) {
+      response.meta.prevPage = page - 1;
+    }
+    if (page < totalPages) {
+      response.meta.nextPage = page + 1;
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -139,47 +133,39 @@ const createProyek = async (req, res) => {
 
 const getProyekById = async (req, res) => {
   try {
-    const accountId = req.role;
+    const response = await Proyek.findOne({
+      attributes: [
+        "id",
+        "slug",
+        "name",
+        "logo",
+        "price_start_from",
+        "address",
+        "proyek_description",
+        "siteplan",
+        "facilities",
+      ],
+      where: {
+        id: req.params.id || null,
+      },
+    });
 
-    if (accountId === "99") {
-      const response = await Proyek.findOne({
-        attributes: [
-          "id",
-          "slug",
-          "name",
-          "logo",
-          "price_start_from",
-          "address",
-          "proyek_description",
-          "siteplan",
-          "facilities",
-        ],
-        where: {
-          id: req.params.id || null,
-        },
+    if (!response)
+      return res.status(404).json({
+        message: "Data tidak ditemukan!",
       });
 
-      if (!response)
-        return res.status(404).json({
-          message: "Data tidak ditemukan!",
-        });
+    const dataFacilities = response.facilities.split(", ").map((item) => {
+      const [label, content] = item.split(": ");
+      return { label, content };
+    });
 
-      const dataFacilities = response.facilities.split(", ").map((item) => {
-        const [label, content] = item.split(": ");
-        return { label, content };
-      });
+    response.facilities = dataFacilities;
 
-      response.facilities = dataFacilities;
-
-      res.status(200).json({
-        message: "Detail proyek berhasil diambil!",
-        data: response,
-      });
-    } else {
-      res
-        .status(403)
-        .json({ message: "Tidak diizinkan melihat detail proyek!" });
-    }
+    res.status(200).json({
+      message: "Detail proyek berhasil diambil!",
+      data: response,
+    });
   } catch (error) {
     res.status(500).json({
       message: "Internal server error!",
@@ -201,44 +187,56 @@ const updateProyek = async (req, res) => {
   const {
     slug,
     name,
+    logo,
     priceStartFrom,
     address,
     proyek_description,
+    siteplan,
     facilities,
   } = req.body;
 
-  const dataFacilities = facilities.split(", ").map((item) => {
-    const [label, content] = item.split(": ");
-    return { label, content };
-  });
+  let dataFacilities;
 
-  const facilitiesString = dataFacilities
-    .map((item) => `${item.label}: ${item.content}`)
-    .join(", ");
+  if (facilities) {
+    dataFacilities = facilities.split(", ").map((item) => {
+      const [label, content] = item.split(": ");
+      return { label, content };
+    });
+  } else {
+    dataFacilities = [];
+  }
+
+  const updateFields = {};
+
+  if (slug) updateFields.slug = slug;
+  if (name) updateFields.name = name;
+  if (logo)
+    updateFields.logo = `/public/assets/images/${req.files.logo[0].filename}`;
+  if (priceStartFrom) updateFields.price_start_from = priceStartFrom;
+  if (address) updateFields.address = address;
+  if (proyek_description) updateFields.proyek_description = proyek_description;
+  if (siteplan)
+    updateFields.siteplan = `/public/assets/document/${req.files.siteplan[0].filename}`;
+  if (facilities) {
+    const dataFacilities = facilities.split(", ").map((item) => {
+      const [label, content] = item.split(": ");
+      return { label, content };
+    });
+
+    updateFields.facilities = dataFacilities
+      .map((item) => `${item.label}: ${item.content}`)
+      .join(", ");
+  }
 
   try {
     const accountId = req.role;
 
     if (accountId === "99") {
-      await Proyek.update(
-        {
-          slug: slug,
-          name: name,
-          logo: `/public/assets/images/${req.files.logo[0].filename}`,
-          // logo: req.files.logo[0].filename,
-          price_start_from: priceStartFrom,
-          address: address,
-          proyek_description: proyek_description,
-          siteplan: `/public/assets/document/${req.files.siteplan[0].filename}`,
-          // siteplan: req.files.siteplan[0].filename,
-          facilities: facilitiesString,
+      await Proyek.update(updateFields, {
+        where: {
+          id: proyek.id,
         },
-        {
-          where: {
-            id: proyek.id,
-          },
-        }
-      );
+      });
       res.status(200).json({ message: "Data Proyek berhasil diubah!" });
     } else {
       res

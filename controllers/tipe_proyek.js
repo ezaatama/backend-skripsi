@@ -8,67 +8,60 @@ const getAllTipeProyek = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const accountId = req.role;
+    const tipeProyek = await TIPE_PROYEK.findAndCountAll({
+      attributes: [
+        "id",
+        "name",
+        "floor",
+        "bath_room",
+        "bed_room",
+        "carport",
+        "luas_bangunan",
+        "cover",
+        "spesification",
+        "proyekId",
+      ],
+      limit,
+      offset,
+    });
 
-    if (accountId === "99") {
-      const tipeProyek = await TIPE_PROYEK.findAndCountAll({
-        attributes: [
-          "id",
-          "name",
-          "bath_room",
-          "bed_room",
-          "carport",
-          "luas_bangunan",
-          "cover",
-          "spesification",
-          "proyekId",
-        ],
-        limit,
-        offset,
-      });
+    const responseWithSpesificationArray = tipeProyek.rows.map((tpProyek) => {
+      const spesificationArray = tpProyek.spesification
+        .split(", ")
+        .map((item) => {
+          const [label, content] = item.split(": ");
+          return { label, content };
+        });
+      tpProyek.spesification = spesificationArray;
+      return tpProyek;
+    });
 
-      const responseWithSpesificationArray = tipeProyek.rows.map((tpProyek) => {
-        const spesificationArray = tpProyek.spesification
-          .split(", ")
-          .map((item) => {
-            const [label, content] = item.split(": ");
-            return { label, content };
-          });
-        tpProyek.spesification = spesificationArray;
-        return tpProyek;
-      });
+    const totalItems = tipeProyek.count;
+    const totalPages = Math.ceil(totalItems / limit);
 
-      const totalItems = tipeProyek.count;
-      const totalPages = Math.ceil(totalItems / limit);
-
-      if (page > totalPages) {
-        // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
-        return res.status(204).end();
-      }
-
-      const response = {
-        message: "Data tipe proyek berhasil diambil",
-        data: responseWithSpesificationArray,
-        meta: {
-          totalItems,
-          totalPages,
-          currentPage: page,
-        },
-      };
-
-      if (page > 1) {
-        response.meta.prevPage = page - 1;
-      }
-      if (page < totalPages) {
-        response.meta.nextPage = page + 1;
-      }
-
-      res.status(200).json(response);
-    } else {
-      res
-        .status(403)
-        .json({ message: "Tidak diizinkan melihat data tipe proyek!" });
+    if (page > totalPages) {
+      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
+      return res.status(204).end();
     }
+
+    const response = {
+      message: "Data tipe proyek berhasil diambil",
+      data: responseWithSpesificationArray,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+      },
+    };
+
+    if (page > 1) {
+      response.meta.prevPage = page - 1;
+    }
+    if (page < totalPages) {
+      response.meta.nextPage = page + 1;
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -76,49 +69,40 @@ const getAllTipeProyek = async (req, res) => {
 
 const getTipeProyekById = async (req, res) => {
   try {
-    const accountId = req.role;
+    const response = await TIPE_PROYEK.findOne({
+      attributes: [
+        "id",
+        "name",
+        "floor",
+        "bath_room",
+        "bed_room",
+        "carport",
+        "luas_bangunan",
+        "cover",
+        "spesification",
+        "proyekId",
+      ],
+      where: {
+        id: req.params.id || null,
+      },
+    });
 
-    if (accountId === "99") {
-      const response = await TIPE_PROYEK.findOne({
-        attributes: [
-          "id",
-          "name",
-          "bath_room",
-          "bed_room",
-          "carport",
-          "luas_bangunan",
-          "cover",
-          "spesification",
-          "proyekId",
-        ],
-        where: {
-          id: req.params.id || null,
-        },
+    if (!response)
+      return res.status(404).json({
+        message: "Data tidak ditemukan!",
       });
 
-      if (!response)
-        return res.status(404).json({
-          message: "Data tidak ditemukan!",
-        });
+    const dataSpesification = response.spesification.split(", ").map((item) => {
+      const [label, content] = item.split(": ");
+      return { label, content };
+    });
 
-      const dataSpesification = response.spesification
-        .split(", ")
-        .map((item) => {
-          const [label, content] = item.split(": ");
-          return { label, content };
-        });
+    response.spesification = dataSpesification;
 
-      response.spesification = dataSpesification;
-
-      res.status(200).json({
-        message: "Detail tipe proyek berhasil diambil!",
-        data: response,
-      });
-    } else {
-      res
-        .status(403)
-        .json({ message: "Tidak diizinkan melihat detail data proyek!" });
-    }
+    res.status(200).json({
+      message: "Detail tipe proyek berhasil diambil!",
+      data: response,
+    });
   } catch (error) {
     res.status(500).json({
       message: "Internal server error!",
@@ -220,6 +204,7 @@ const updateTipeProyek = async (req, res) => {
     name,
     floor,
     bathRoom,
+    cover,
     bedRoom,
     carport,
     luasBangunan,
@@ -227,37 +212,47 @@ const updateTipeProyek = async (req, res) => {
     proyekId,
   } = req.body;
 
-  const dataSpesification = spesification.split(", ").map((item) => {
-    const [label, content] = item.split(": ");
-    return { label, content };
-  });
+  let dataSpesification;
 
-  const spesificationString = dataSpesification
-    .map((item) => `${item.label}: ${item.content}`)
-    .join(", ");
+  if (spesification) {
+    dataSpesification = spesification.split(", ").map((item) => {
+      const [label, content] = item.split(": ");
+      return { label, content };
+    });
+  } else {
+    dataSpesification = [];
+  }
+
+  const updateFields = {};
+
+  if (name) updateFields.name = name;
+  if (floor) updateFields.floor = floor;
+  if (cover) updateFields.cover = `/public/assets/images/${req.file.filename}`;
+  if (bathRoom) updateFields.bath_room = bathRoom;
+  if (bedRoom) updateFields.bed_room = bedRoom;
+  if (carport) updateFields.carport = carport;
+  if (luasBangunan) updateFields.luas_bangunan = luasBangunan;
+  if (spesification) {
+    const dataSpesification = spesification.split(", ").map((item) => {
+      const [label, content] = item.split(": ");
+      return { label, content };
+    });
+
+    updateFields.spesification = dataSpesification
+      .map((item) => `${item.label}: ${item.content}`)
+      .join(", ");
+  }
+  if (proyekId) updateFields.proyekId = proyekId;
 
   try {
     const accountId = req.role;
 
     if (accountId === "99") {
-      await TIPE_PROYEK.update(
-        {
-          name: name,
-          floor: floor,
-          bath_room: bathRoom,
-          bed_room: bedRoom,
-          carport: carport,
-          luas_bangunan: luasBangunan,
-          cover: `/public/assets/images/${req.file.filename}`,
-          spesification: spesificationString,
-          proyekId: proyekId,
+      await TIPE_PROYEK.update(updateFields, {
+        where: {
+          id: tipeProyek.id,
         },
-        {
-          where: {
-            id: tipeProyek.id,
-          },
-        }
-      );
+      });
       res.status(200).json({ message: "Data Tipe Proyek berhasil diubah!" });
     } else {
       res
