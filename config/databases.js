@@ -10,9 +10,9 @@ const sequelize = new Sequelize(
   }
 );
 
-// const sequelize = new Sequelize('skripsweet_homers', 'root', '', {
-//     host: "localhost",
-//     dialect: "mysql"
-// })
+// const sequelize = new Sequelize("skripsweet_homers", "root", "", {
+//   host: "localhost",
+//   dialect: "mysql",
+// });
 
 module.exports = sequelize;
