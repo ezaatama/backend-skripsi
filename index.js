@@ -49,7 +49,7 @@ app.use(
       //jika menggunakan https atur secure jadi true
       //karna disini masih local menggunakan http maka secure jadi false
       secure: false,
-      sameSite: 'none'
+      sameSite: "none",
     },
   })
 );
