@@ -53,18 +53,12 @@ const getAllUnits = async (req, res) => {
 
 //mobile
 const getListUnits = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const offset = (page - 1) * limit;
-
   try {
     const accountId = req.user;
 
     const units = await Units.findAndCountAll({
       attributes: ["uuid", "name", "status"],
       where: { accountId: accountId },
-      offset,
-      limit,
       include: [
         {
           model: Proyek,
@@ -79,30 +73,15 @@ const getListUnits = async (req, res) => {
       ],
     });
 
-    const totalItems = units.count;
-    const totalPages = Math.ceil(totalItems / limit);
-
-    if (page > totalPages) {
-      // Jika halaman yang diminta melebihi total halaman yang ada, kirim respons 204 (No Content).
-      return res.status(204).end();
-    }
+    if (!units)
+      return res.status(404).json({
+        message: "Data tidak ditemukan!",
+      });
 
     const response = {
       message: "Data unit berhasil diambil",
       data: units.rows,
-      meta: {
-        totalItems,
-        totalPages,
-        currentPage: page,
-      },
     };
-
-    if (page > 1) {
-      response.meta.prevPage = page - 1;
-    }
-    if (page < totalPages) {
-      response.meta.nextPage = page + 1;
-    }
 
     res.status(200).json(response);
   } catch (error) {
