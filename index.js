@@ -57,7 +57,7 @@ app.use(
 const corsOptions = {
   exposedHeaders: ["Authorization", "x-access-token"],
   credentials: true,
-  origin: ["http://sandbox-gethome.my.id", "http://localhost:3000"],
+  origin: ["https://sandbox-gethome.my.id", "http://localhost:3000"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   optionsSuccessStatus: 204,
 };
