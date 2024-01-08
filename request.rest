@@ -47,7 +47,7 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "email": "ezatama33@gmail.com",
+    "email": "admin@gmail.com",
     //"email": "superadmin@gmail.com",
     "password": "123456"
 }
@@ -68,13 +68,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtY
 //units
 GET http://localhost:3000/units
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzAwNjI2MjY2LCJleHAiOjE3MDA2Mjk4NjZ9.BVXcmiaJf6sMFjUbImEKMBsjsReIKGrpxgRZTrBhrg4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzA0Njk2MzEyLCJleHAiOjE3MDQ2OTk5MTJ9.XbWlI2JfKoMN-VzGzUzVfwn7v-zgQu9-4lvsi0xKlgU
 
 ###
 //units
-GET http://localhost:3000/units/96d8b13c-0575-477d-891f-ab8694dcba26
+GET http://localhost:3000/units/64f6e855-c933-47d0-91e8-9b21f07b6249
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzAwNDAwNzczLCJleHAiOjE3MDA0MDQzNzN9.qFBKDZa127IXtBWoQjJMLc0ILIXKksF0TAPrUh1Sd7E
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzA0Njk2MzEyLCJleHAiOjE3MDQ2OTk5MTJ9.XbWlI2JfKoMN-VzGzUzVfwn7v-zgQu9-4lvsi0xKlgU
 
 ###
 //proyek
@@ -133,12 +133,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtY
 ###
 GET http://localhost:3000/buyer
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzAwNjI2MzQ3LCJleHAiOjE3MDA2Mjk5NDd9.BjqfnvrtYwRUl893AUyMUTH3dF6ObNfNdcDK_3sIzYQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzA0Njk2MzEyLCJleHAiOjE3MDQ2OTk5MTJ9.XbWlI2JfKoMN-VzGzUzVfwn7v-zgQu9-4lvsi0xKlgU
 
 ###
-DELETE http://localhost:3000/buyer/2
+GET http://localhost:3000/buyer/2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzAwNjI2MzQ3LCJleHAiOjE3MDA2Mjk5NDd9.BjqfnvrtYwRUl893AUyMUTH3dF6ObNfNdcDK_3sIzYQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzA0Njk2MzEyLCJleHAiOjE3MDQ2OTk5MTJ9.XbWlI2JfKoMN-VzGzUzVfwn7v-zgQu9-4lvsi0xKlgU
 
 ###
 GET http://localhost:3000/detail-unit/64f6e855-c933-47d0-91e8-9b21f07b6249
