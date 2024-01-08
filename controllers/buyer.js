@@ -102,6 +102,10 @@ const getBuyerById = async (req, res) => {
             attributes: [],
           },
         },
+        {
+          model: Account,
+          attributes: ["id", "name"],
+        }
       ],
     });
 
