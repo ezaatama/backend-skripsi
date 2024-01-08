@@ -222,6 +222,19 @@ const getUnitById = async (req, res) => {
             attributes: [],
           },
         },
+        {
+          model: TipeProyek,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Proyek,
+          attributes: ["id", "name"],
+         
+        },
+        {
+          model: Account,
+          attributes: ["id", "name"],
+        }
       ],
     });
 
