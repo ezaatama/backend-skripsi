@@ -18,6 +18,11 @@ const getProgressUnits = async (req, res) => {
           model: ProgressImage,
           attributes: ["url"],
         },
+          {
+            model: Units,
+            attributes: ["id", "name"]
+          }
+        
       ],
     });
 
@@ -59,12 +64,7 @@ const getProgressUnitById = async (req, res) => {
       where: {
         id: req.params.id || null,
       },
-      include: [
-        {
-          model: Units,
-          attributes: ["id", "name"]
-        }
-      ]
+      
     });
 
     if (!response)
