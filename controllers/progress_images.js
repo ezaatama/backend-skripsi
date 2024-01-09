@@ -15,6 +15,7 @@ const getProgressImages = async (req, res) => {
     });
 
     const imageArray = progressImage.rows.map((image) => ({
+      id: image.id,
       url: image.url,
     }));
 
