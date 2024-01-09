@@ -40,5 +40,7 @@ const Units = sequelize.define(
 Units.hasMany(ProgressUnit);
 Units.hasMany(ProgressImage);
 Units.belongsTo(Account);
+ProgressUnit.belongsTo(Units);
+
 
 module.exports = Units;
