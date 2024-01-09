@@ -59,6 +59,12 @@ const getProgressUnitById = async (req, res) => {
       where: {
         id: req.params.id || null,
       },
+      include: [
+        {
+          model: Units,
+          attributes: ["id", "name"]
+        }
+      ]
     });
 
     if (!response)
