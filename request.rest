@@ -150,4 +150,12 @@ GET http://localhost:3000/progress-unit/64f6e855-c933-47d0-91e8-9b21f07b6249
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiZXphdGFtYTMzQGdtYWlsLmNvbSIsInJvbGUiOiI5OCIsImlhdCI6MTcwMDAzNjM1OCwiZXhwIjoxNzAwMDM5OTU4fQ.IjjRFna29qnoyg01Q48eV5KUfhh6yl64lJBBAXQS7nY
 
+###
+GET http://localhost:3000/progress-image?page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzA0Nzc1MzQzLCJleHAiOjE3MDQ3Nzg5NDN9.cgwx9Kk54NRCIhJ17ogvyauX_9enhzoCYCa523rDUlw
 
+###
+GET http://localhost:3000/progress/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6Ijk5IiwiaWF0IjoxNzA0Nzc1MzQzLCJleHAiOjE3MDQ3Nzg5NDN9.cgwx9Kk54NRCIhJ17ogvyauX_9enhzoCYCa523rDUlw
