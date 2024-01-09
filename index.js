@@ -28,10 +28,10 @@ dotEnv.config();
 //   .authenticate()
 //   .then(() => {
 //     console.log("Database connected...");
-//     // Units.sync({alter: true});
+//     Units.sync({alter: true});
 //     // TipeProyek.sync({alter: true});
 //     // Proyek.sync({alter: true});
-//     Accounts.sync({alter: true});
+//     // Accounts.sync({alter: true});
 //     // user.sync({force: true});
 //     // roles.drop();
 //     // user.drop();
